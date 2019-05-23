@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "test alipay app with gulp",
     "scripts": {
-        "dev": "gulp"
+        "dev": "gulp dev",
+        "fat": "gulp fat"
     },
     "author": "Yue",
     "devDependencies": {
