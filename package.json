@@ -1,0 +1,17 @@
+{
+    "name": "TodoApp",
+    "version": "1.0.0",
+    "description": "test alipay app with gulp",
+    "scripts": {
+        "dev": "gulp"
+    },
+    "author": "Yue",
+    "devDependencies": {
+        "del": "^4.1.1",
+        "gulp": "^3.9.1",
+        "gulp-changed": "^3.2.0",
+        "gulp-rename": "^1.4.0",
+        "gulp-sass": "^4.0.2",
+        "run-sequence": "^2.2.1"
+    }
+}
