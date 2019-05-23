@@ -9,6 +9,7 @@
     "devDependencies": {
         "del": "^4.1.1",
         "gulp": "^3.9.1",
+        "gulp-autoprefixer": "^6.1.0",
         "gulp-changed": "^3.2.0",
         "gulp-rename": "^1.4.0",
         "gulp-sass": "^4.0.2",

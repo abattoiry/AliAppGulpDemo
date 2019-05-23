@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const del = require('del');
 const sass = require('gulp-sass');
 const rename = require('gulp-rename');
+const autoPrefixer = require('gulp-autoprefixer');
 const runSequence = require('run-sequence').use(gulp);
 const changed = require('gulp-changed');
 
@@ -28,6 +29,7 @@ gulp.task('copy', function () {
 gulp.task('scss', function () {
     return gulp.src(`${PATH.allSrc}.scss`)
         .pipe(sass().on('error', sass.logError))
+        .pipe(autoPrefixer())
         .pipe(rename((path) => path.extname = '.acss'))
         .pipe(gulp.dest(PATH.dist))
 })
