@@ -1,9 +1,9 @@
 {
-    "name": "TodoApp",
+    "name": "AliAppGulpDemo",
     "version": "1.0.0",
-    "description": "test alipay app with gulp",
+    "description": "",
     "scripts": {
-        "dev": "gulp dev",
+        "start": "gulp dev",
         "fat": "gulp fat"
     },
     "author": "Yue",

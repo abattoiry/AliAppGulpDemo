@@ -13,6 +13,11 @@ const PATH = {
     dist: './dist'
 }
 
+/**
+ * 将环境字段写入/src/constants/env.js文件
+ *
+ * @param {String} env 环境字段
+ */
 function codeEnv(env) {
     fs.open('./src/constants/env.js', 'w', function (err, fd) {
         const buf = `export default '${env}';`;
@@ -33,7 +38,7 @@ gulp.task('copy', function () {
         .pipe(gulp.dest(PATH.dist));
 })
 
-// 将scss文件编译到dist文件夹里并改名为acss，如果当前文件夹既有acss也有scss，scss将会覆盖
+// 将scss文件编译到dist文件夹里并改名为acss
 gulp.task('scss', function () {
     return gulp.src(`${PATH.allSrc}.scss`)
         .pipe(sass().on('error', sass.logError))
