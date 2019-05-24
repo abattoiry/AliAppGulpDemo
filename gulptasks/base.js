@@ -11,8 +11,8 @@ const watch = require('gulp-watch');
 
 // 路径
 const PATH = {
-    allSrc: 'src/**/*',
-    dist: 'dist',
+    allSrc: './src/**/*',
+    dist: './dist',
     get allImgs() {
         return `${this.allSrc}.{png,jpg}`;
     }
@@ -53,12 +53,6 @@ gulp.task('clean', function () {
     ])
 })
 
-// 将文件从src copy到dist，去除scss
-gulp.task('copy', function () {
-    return gulp.src([PATH.allSrc, `!${PATH.allSrc}.scss`])
-        .pipe(gulp.dest(PATH.dist));
-})
-
 // 将scss文件编译到dist文件夹里并改名为acss
 gulp.task('scss', function () {
     return gulp.src(`${PATH.allSrc}.scss`)
@@ -68,8 +62,20 @@ gulp.task('scss', function () {
         .pipe(gulp.dest(PATH.dist))
 })
 
+// 将其他文件从src copy到dist
+gulp.task('copy', function () {
+    return gulp.src([PATH.allSrc, `!${PATH.allSrc}.{scss}`])
+        .pipe(gulp.dest(PATH.dist));
+})
+
+// 将图片文件压缩到dist
+gulp.task('image', function() {
+    return imgMin()
+        .pipe(gulp.dest(PATH.dist));
+})
+
 // 观察文件修改
-// 如果是修改文件名字，会触发两次task，是因为vscode会触发两次编辑，没想到解决方案，也不重要
+// 如果是修改文件名字，会触发两次task，是因为vscode做了两次编辑，没想到解决方案，也不重要
 // 修改代码只会触发一次
 gulp.task('watch', function () {
     // 仅做scss的处理
@@ -90,8 +96,12 @@ gulp.task('watch', function () {
     })
 })
 
-function run() {
-    runSequence('clean', 'copy', 'scss', 'watch');
+function run(imgFlag) {
+    if (imgFlag) {
+        runSequence('clean','scss', 'copy', 'image', 'watch');
+    } else {
+        runSequence('clean','scss', 'copy', 'watch');
+    }
 };
 
 module.exports = {
