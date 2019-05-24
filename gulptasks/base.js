@@ -6,11 +6,16 @@ const autoPrefixer = require('gulp-autoprefixer');
 const runSequence = require('run-sequence').use(gulp);
 const changed = require('gulp-changed');
 const fs = require('fs');
+const imagemin = require('gulp-imagemin');
+const watch = require('gulp-watch');
 
 // 路径
 const PATH = {
-    allSrc: './src/**/*',
-    dist: './dist'
+    allSrc: 'src/**/*',
+    dist: 'dist',
+    get allImgs() {
+        return `${this.allSrc}.{png,jpg}`;
+    }
 }
 
 /**
@@ -23,6 +28,22 @@ function codeEnv(env) {
         const buf = `export default '${env}';`;
         fs.write(fd, buf, 0, 'utf-8', function (err, written, buffer) { });
     });
+}
+
+/**
+ * 图片压缩并log，但是没有destination
+ */
+function imgMin(changedFlag) {
+    return gulp.src(PATH.allImgs)
+        .pipe(imagemin([
+            imagemin.gifsicle({ progressive: true }),
+            imagemin.jpegtran({ progressive: true }),
+            imagemin.optipng({ progressive: true }),
+            imagemin.svgo({
+                progressive: true, plugins: [{ removeViewBox: true },]
+            })], {
+                verbose: true // 开启图片压缩log
+            }))
 }
 
 // 删除dist中所有文件
@@ -48,13 +69,21 @@ gulp.task('scss', function () {
 })
 
 // 观察文件修改
+// 如果是修改文件名字，会触发两次task，是因为vscode会触发两次编辑，没想到解决方案，也不重要
+// 修改代码只会触发一次
 gulp.task('watch', function () {
     // 仅做scss的处理
-    gulp.watch(`${PATH.allSrc}.scss`).on('change', function () {
+    watch(`${PATH.allSrc}.scss`, function () {
         runSequence('scss');
     });
-    gulp.watch([PATH.allSrc, `!${PATH.allSrc}.{scss}`]).on('change', function () {
-        return gulp.src([PATH.allSrc, `!${PATH.allSrc}.{scss}`])
+    // 图片压缩到dist
+    watch(PATH.allImgs, function () {
+        return imgMin()
+            .pipe(gulp.dest(PATH.dist))
+    })
+    // 其他文件的copy
+    watch([PATH.allSrc, `!${PATH.allSrc}.{scss,png,jpg}`], function () {
+        return gulp.src([PATH.allSrc, `!${PATH.allSrc}.{scss,png,jpg}`])
             // 仅处理修改过的文件
             .pipe(changed(PATH.dist))
             .pipe(gulp.dest(PATH.dist));
@@ -67,5 +96,6 @@ function run() {
 
 module.exports = {
     run: run,
-    codeEnv: codeEnv
+    codeEnv: codeEnv,
+    imgMin: imgMin
 }

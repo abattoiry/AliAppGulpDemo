@@ -4,7 +4,8 @@
     "description": "",
     "scripts": {
         "start": "gulp dev",
-        "fat": "gulp fat"
+        "fat": "gulp fat",
+        "imagemin": "gulp imagemin"
     },
     "author": "Yue",
     "devDependencies": {
@@ -12,8 +13,11 @@
         "gulp": "^3.9.1",
         "gulp-autoprefixer": "^6.1.0",
         "gulp-changed": "^3.2.0",
+        "gulp-imagemin": "^5.0.3",
         "gulp-rename": "^1.4.0",
         "gulp-sass": "^4.0.2",
+        "gulp-watch": "^5.0.1",
+        "imagemin": "^6.1.0",
         "run-sequence": "^2.2.1"
     }
 }
