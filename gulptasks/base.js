@@ -69,7 +69,7 @@ gulp.task('copy', function () {
 })
 
 // 将图片文件压缩到dist
-gulp.task('image', function() {
+gulp.task('image', function () {
     return imgMin()
         .pipe(gulp.dest(PATH.dist));
 })
@@ -98,9 +98,9 @@ gulp.task('watch', function () {
 
 function run(imgFlag) {
     if (imgFlag) {
-        runSequence('clean','scss', 'copy', 'image', 'watch');
+        runSequence('clean', 'scss', 'copy', 'image', 'watch');
     } else {
-        runSequence('clean','scss', 'copy', 'watch');
+        runSequence('clean', 'scss', 'copy', 'watch');
     }
 };
 
