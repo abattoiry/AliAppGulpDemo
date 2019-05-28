@@ -8,6 +8,7 @@ const changed = require('gulp-changed');
 const fs = require('fs');
 const imagemin = require('gulp-imagemin');
 const watch = require('gulp-watch');
+const terser = require('gulp-terser');
 
 // 路径
 const PATH = {
@@ -15,6 +16,9 @@ const PATH = {
     dist: './dist',
     get allImgs() {
         return `${this.allSrc}.{png,jpg}`;
+    },
+    get allOthers() {
+        return `!${this.allSrc}.{js,scss,png,jpg}`
     }
 }
 
@@ -53,6 +57,17 @@ gulp.task('clean', function () {
     ])
 })
 
+console.log(`${PATH.allSrc}.js`);
+// js处理
+gulp.task('js', function () {
+    return gulp.src(`${PATH.allSrc}.js`)
+        .pipe(terser({
+            keep_fnames: false,
+            mangle: true
+          }).on('error', console.error))
+        .pipe(gulp.dest(PATH.dist))
+})
+
 // 将scss文件编译到dist文件夹里并改名为acss
 gulp.task('scss', function () {
     return gulp.src(`${PATH.allSrc}.scss`)
@@ -64,7 +79,7 @@ gulp.task('scss', function () {
 
 // 将其他文件从src copy到dist
 gulp.task('copy', function () {
-    return gulp.src([PATH.allSrc, `!${PATH.allSrc}.{scss}`])
+    return gulp.src([PATH.allSrc, `!${PATH.allSrc}.{js,scss}`])
         .pipe(gulp.dest(PATH.dist));
 })
 
@@ -88,8 +103,8 @@ gulp.task('watch', function () {
             .pipe(gulp.dest(PATH.dist))
     })
     // 其他文件的copy
-    watch([PATH.allSrc, `!${PATH.allSrc}.{scss,png,jpg}`], function () {
-        return gulp.src([PATH.allSrc, `!${PATH.allSrc}.{scss,png,jpg}`])
+    watch([PATH.allSrc, PATH.allOthers], function () {
+        return gulp.src([PATH.allSrc, PATH.allOthers])
             // 仅处理修改过的文件
             .pipe(changed(PATH.dist))
             .pipe(gulp.dest(PATH.dist));
@@ -98,9 +113,9 @@ gulp.task('watch', function () {
 
 function run(imgFlag) {
     if (imgFlag) {
-        runSequence('clean', 'scss', 'copy', 'image', 'watch');
+        runSequence('clean', 'js', 'scss', 'copy', 'image', 'watch');
     } else {
-        runSequence('clean', 'scss', 'copy', 'watch');
+        runSequence('clean', 'js', 'scss', 'copy', 'watch');
     }
 };
 
